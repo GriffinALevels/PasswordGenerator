@@ -228,74 +228,6 @@ class GeneratePassword(PasswordHandler):
 		self.container.mainMenu.pack()
 
 
-class SaveAccount(PasswordHandler):
-	def __init__(self, container):
-		self.container = container
-
-		super().__init__(container)
-
-		self.username = StringVar()
-		self.passwordRating = StringVar()
-		self.passwordStrength = StringVar()
-
-		self.passwordRating.set("Score: ")
-		self.passwordStrength.set("Strength: ")
-
-		self.usernameLabel = Label(self, text="Username/Email: ")
-		self.passwordLabel = Label(self, text="Password: ")
-		self.usernameEntry = Entry(self, textvariable=self.username)
-		self.passwordEntry = Entry(self, textvariable=self.password)
-		self.passwordRatingLabel = Label(self, textvariable=self.passwordRating)
-		self.passwordStrengthLabel = Label(self, textvariable=self.passwordStrength)
-		self.saveBtn = Button(self, text="Save Account", command=self.saveBtnClicked)
-
-		self.usernameLabel.grid(row=0, column=0, sticky="NESW")
-		self.passwordLabel.grid(row=1, column=0, sticky="NESW")
-		self.usernameEntry.grid(row=0, column=1, sticky="NESW")
-		self.passwordEntry.grid(row=1, column=1, sticky="NESW")
-		self.passwordRatingLabel.grid(row=2, column=0, sticky="NESW")
-		self.passwordStrengthLabel.grid(row=2, column=1, sticky="NESW")
-		self.saveBtn.grid(row=3, column=0, columnspan=2, sticky="NESW")
-
-		self.pack()
-
-	def saveBtnClicked(self) -> None:
-		username = self.username.get()
-		password = self.password.get()
-
-		print("Username: " + username)
-		print("Password: " + password)
-
-		if username == "":
-			messagebox.showinfo("Info", "Please fill in the username field")
-			return
-		elif password == "":
-			messagebox.showinfo("Info", "Please fill in the password field")
-			return
-
-		# Check that the username is valid (no spaces)
-		if username.count(" ") > 0:
-			messagebox.showinfo("Info", "Spaces are not allowed in the username")
-			return
-
-		# Evaluate password to display info
-		(score, strength) = self.evalPassword()
-
-		if strength != "Strong":
-			messageContent = ["Confirmation", "This password is ", ", are you sure you want to use it?"]
-
-			if strength == "Medium":
-				messageContent[1] += "only "
-				messageContent[2] = " strength" + messageContent[2]
-
-			boxAnswer = messagebox.askyesno(messageContent[0], messageContent[1] + str(strength.lower()) + messageContent[2])
-
-			if boxAnswer == False:
-				return
-
-		# Write data to text file
-
-
 class MainMenu(Frame):
 	def __init__(self, container):
 		self.container = container
@@ -305,13 +237,11 @@ class MainMenu(Frame):
 		self.title = Label(self, text="Password Generator")
 		self.checkPasswordButton = Button(self, text="Check Password", command=self.checkPasswordClicked)
 		self.generatePasswordButton = Button(self, text="Generate Password", command=self.generatePasswordClicked)
-		self.saveAccountButton = Button(self, text="Save Account", command=self.saveAccountClicked)
 		self.quitButton = Button(self, text="Quit", command=self.quit)
 
 		self.title.pack(fill=BOTH, expand=True)
 		self.checkPasswordButton.pack(fill=BOTH, expand=True)
 		self.generatePasswordButton.pack(fill=BOTH, expand=True)
-		self.saveAccountButton.pack(fill=BOTH, expand=True)
 		self.quitButton.pack(fill=BOTH, expand=True)
 
 		self.pack()
